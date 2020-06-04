@@ -209,24 +209,25 @@ def theta_range(theta, gains_range, noise_range, goal_radius_range, Pro_Noise = 
     theta[8].data.clamp_(goal_radius_range[0], goal_radius_range[1])
 
     # give some error if it hits the extreme
+    theta_copy = theta.data.clone()
     for i in [0,4]:
         if theta[i] == gains_range[0]:
-            theta[i] += 1e-2 * torch.rand(1).item()
+            theta[i].data.copy_(theta_copy[i] + 1e-2 * torch.rand(1).item())
 
         if theta[i] == gains_range[1]:
-            theta[i] -= 1e-2 * torch.rand(1).item()
+            theta[i].data.copy_(theta_copy[i] - 1e-2 * torch.rand(1).item())
     for i in [1, 5]:
         if theta[i] == gains_range[2]:
-            theta[i] += 1e-2 * torch.rand(1).item()
+            theta[i].data.copy_(theta_copy[i] + 1e-2 * torch.rand(1).item())
 
         if theta[i] == gains_range[3]:
-            theta[i] -= 1e-2 * torch.rand(1).item()
+            theta[i].data.copy_(theta_copy[i] - 1e-2 * torch.rand(1).item())
 
     if theta[8] == goal_radius_range[0]:
-        theta[8] += 1e-2 * torch.rand(1).item()
+        theta[8].data.copy_(theta_copy[8] + 1e-2 * torch.rand(1).item())
     elif theta[8] == goal_radius_range[1]:
-        theta[8] -= 1e-2 * torch.rand(1).item()
-
+        theta[8].data.copy_(theta_copy[8] - 1e-2 * torch.rand(1).item())
+    del theta_copy
     return theta
 
 

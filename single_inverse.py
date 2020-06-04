@@ -118,4 +118,6 @@ def single_inverse(true_theta, arg, env, agent, x_traj, a_traj,  true_loss, file
             #'loss_act_log': loss_act_log,
             #'loss_obs_log': loss_obs_log,
 
+    torch.save(result, '../firefly-inverse-data/data/' + filename + str(n)+ str(arg.NUM_thetas) + "EP" + str(arg.NUM_EP) + str(np.around(arg.PI_STD, decimals=2)) + str(arg.NUM_SAMPLES) + "IT" + str(arg.NUM_IT) + str(arg.SEED_NUMBER) +'_single_result_part.pkl')
+
     return result
