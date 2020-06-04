@@ -52,7 +52,7 @@ class Model(nn.Module):
         #self.rendering = Render()
         #self.reset()
 
-    def reset(self, gains_range, noise_range, goal_radius_range, goal_radius=None, pro_gains=None, pro_noise_ln_vars=None):
+    def reset(self, gains_range, noise_range, goal_radius_range, goal_radius=None, pro_gains=None, pro_noise_ln_vars=None, loc_ang = None, r=None, rel_ang = None):
 
         self.pro_gains = torch.zeros(2)
         self.pro_noise_ln_vars = torch.zeros(2)
@@ -67,19 +67,22 @@ class Model(nn.Module):
 
         if pro_noise_ln_vars is None:
 
+            # reason why to use exponetial function: when the agent gets traiend, try use high noise
             self.pro_noise_ln_vars[0] = -1 * sample_exp(-noise_range[1], -noise_range[0]) #[proc_vel_noise]
             self.pro_noise_ln_vars[1] = -1 * sample_exp(-noise_range[3], -noise_range[2]) #[proc_ang_noise]
+
+            # this uniform sampling returns low noise more frequently
+            #self.pro_noise_ln_vars[0] = torch.zeros(1).uniform_(noise_range[0], noise_range[1])  # [proc_vel_noise]
+            #self.pro_noise_ln_vars[1] = torch.zeros(1).uniform_(noise_range[2], noise_range[3])  # [proc_ang_noise]
+
+
         else:
             self.pro_noise_ln_vars = pro_noise_ln_vars
 
-        """
-        if pro_noise_stds is None:
-            self.pro_noise_stds[0] = torch.zeros(1).uniform_(std_range[0], std_range[1]) #[proc_vel_noise]
-            self.pro_noise_stds[1] = torch.zeros(1).uniform_(std_range[2],
-                                                             std_range[3])  # [proc_ang_noise]
-        else:
-            self.pro_noise_stds = pro_noise_stds
-        """
+
+
+
+
 
         if goal_radius is None:
             self.max_goal_radius = min(self.max_goal_radius + self.GOAL_RADIUS_STEP, goal_radius_range[1])
@@ -90,21 +93,23 @@ class Model(nn.Module):
 
 
         self.time = torch.zeros(1)
-        min_r = self.goal_radius.item()
-        #if self.world_size > 1.0:
-        #    self.box = min(self.world_size, self.box + self.BOX_STEP_SIZE)
-        r = torch.zeros(1).uniform_(min_r, self.box)  # GOAL_RADIUS, self.box
+
+        if r is None:
+            min_r = self.goal_radius.item()
+            #if self.world_size > 1.0:
+            #    self.box = min(self.world_size, self.box + self.BOX_STEP_SIZE)
+            r = torch.zeros(1).uniform_(min_r, self.box)  # GOAL_RADIUS, self.box
 
 
-        #min_r = 0 #self.goal_radius.item()
-        ##if self.box > 1.0:
-            #min_r = self.box - BOX_STEP_SIZE
-        #r = torch.zeros(1).uniform_(min_r, self.box) # GOAL_RADIUS, self.box
 
-        loc_ang = torch.zeros(1).uniform_(-pi, pi) # location angel: to determine initial location
+
+        if loc_ang is None:
+            loc_ang = torch.zeros(1).uniform_(-pi, pi) # location angel: to determine initial location
         px = r * torch.cos(loc_ang)
         py = r * torch.sin(loc_ang)
-        rel_ang = torch.zeros(1).uniform_(-pi/4, pi/4)
+
+        if rel_ang is None:
+            rel_ang = torch.zeros(1).uniform_(-pi/4, pi/4)
         ang = rel_ang + loc_ang + pi # heading angle of monkey, pi is added in order to make the monkey toward firefly
         ang = range_angle(ang)
 

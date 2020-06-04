@@ -47,8 +47,14 @@ class BeliefStep(nn.Module):
             self.obs_gains = obs_gains
 
         if obs_noise_ln_vars is None:
+
+            # reason why to use exponential function: when the agent gets traiend, try use high noise
             self.obs_noise_ln_vars[0] = -1 * sample_exp(-noise_range[1], -noise_range[0]) # [obs_vel_noise]
             self.obs_noise_ln_vars[1] = -1 * sample_exp(-noise_range[3], -noise_range[2]) # [obs_ang_noise]
+
+            # this uniform sampling returns low noise more frequently
+            #self.obs_noise_ln_vars[0] = torch.zeros(1).uniform_(noise_range[0], noise_range[1])  # [obs_vel_noise]
+            #self.obs_noise_ln_vars[1] = torch.zeros(1).uniform_(noise_range[2], noise_range[3])  # [obs_ang_noise]
         else:
             self.obs_noise_ln_vars = obs_noise_ln_vars
 
@@ -105,6 +111,8 @@ class BeliefStep(nn.Module):
             print("APA:", APA)
             print("APA +:", is_pos_def(APA))
         error = ox - self.observations(bx_)
+        #error = ox - self.observations_mean(bx_)
+
         S = H.mm(P_).mm(H.t()) + R # S = HPH^T+R
         K = P_.mm(H.t()).mm(torch.inverse(S)) # K = PHS^-1
         bx = bx_ + K.matmul(error)
