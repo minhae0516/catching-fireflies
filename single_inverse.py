@@ -70,13 +70,13 @@ def single_inverse(true_theta, arg, env, agent, x_traj, a_traj,  true_loss, file
             #print("num:{},theta diff sum:{}".format(it, 1e6 * (true_theta - theta.data.clone()).sum().data))
             print("num_theta:{}, num:{}, loss:{}, true loss:{},\n true_theta:{}, \n converged_theta:{}\n".format(n, it,np.round(loss.data.item(), 6),np.round(true_loss.data.item(), 6),true_theta.data, theta.data))
 
-        if it%50 == 0:
+        if it%50 == 0 and it >0:
             plt.plot(loss_log)
             plt.title("it:{}".format(it))
             plt.savefig('../firefly-inverse-data/data/'+filename +str(n)+'_loss.png')
 
 
-        if it >100 and it%10==0:
+        if it >200 and it%10==0:
             if np.mean(loss_log_recent) < true_loss:
                 break
 
