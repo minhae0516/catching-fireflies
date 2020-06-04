@@ -39,7 +39,7 @@ def single_inverse(true_theta, arg, env, agent, x_traj, a_traj,  true_loss, file
 
 
     loss_log = deque(maxlen=arg.NUM_IT)
-    loss_log_5 = deque(maxlen=5)
+    loss_log_recent = deque(maxlen=100)
     #loss_act_log = deque(maxlen=arg.NUM_IT)
     #loss_obs_log = deque(maxlen=arg.NUM_IT)
     theta_log = deque(maxlen=arg.NUM_IT)
@@ -76,8 +76,8 @@ def single_inverse(true_theta, arg, env, agent, x_traj, a_traj,  true_loss, file
             plt.savefig('../firefly-inverse-data/data/'+filename +str(n)+'_loss.png')
 
 
-        if it >50 and it%10==0:
-            if np.mean(loss_log_5) < true_loss:
+        if it >100 and it%10==0:
+            if np.mean(loss_log_recent) < true_loss:
                 break
 
 
@@ -107,6 +107,7 @@ def single_inverse(true_theta, arg, env, agent, x_traj, a_traj,  true_loss, file
               'theta': theta,
               'theta_log': theta_log,
               'loss_log': loss_log,
+              'true_loss': true_loss,
               'filename': filename,
               'num_theta': n,
               'converging_it': it,
