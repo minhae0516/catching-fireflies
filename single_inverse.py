@@ -75,10 +75,12 @@ def single_inverse(true_theta, arg, env, agent, x_traj, a_traj,  true_loss, file
             plt.title("it:{}".format(it))
             plt.savefig('../firefly-inverse-data/data/'+filename +str(n)+'_loss.png')
 
-
-        if it >200 and it%10==0:
+        """
+        if it >1000 and it%10==0:
             if np.mean(loss_log_recent) < true_loss:
                 break
+                
+        """
 
 
     toc = time.time()
