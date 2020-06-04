@@ -30,8 +30,8 @@ class Inverse_Config:
         self.GOAL_RADIUS_STEP_SIZE = 0
         self.PI_STD = 0.08 #1/5 # policy std --> just normalizer in this code
         self.NUM_SAMPLES = 10 # number of particles
-        self.NUM_EP = 20
-        self.NUM_IT = 1000 # number of iteration for gradient descent
+        self.NUM_EP = 200
+        self.NUM_IT = 2000 # number of iteration for gradient descent
         self.NUM_thetas = 10
 
         self.ADAM_LR = 1e-3 #5e-1#for learning rate annealing#5e-3
