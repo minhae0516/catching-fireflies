@@ -50,7 +50,7 @@ def single_inverse(true_theta, arg, env, agent, x_traj, a_traj,  true_loss, file
     for it in tqdm(range(arg.NUM_IT)):
         loss, loss_act, loss_obs = getLoss(agent, x_traj, a_traj, theta, env, arg.gains_range, arg.noise_range, arg.PI_STD, arg.NUM_SAMPLES)
         loss_log.append(loss.data)
-        loss_log_5.append(loss.data)
+        loss_log_recent.append(loss.data)
         #loss_act_log.append(loss_act.data)
         #loss_obs_log.append(loss_obs.data)
         optT.zero_grad() #clears old gradients from the last step
